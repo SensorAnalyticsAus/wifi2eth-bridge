@@ -31,7 +31,7 @@ NB: Metric should be higher than the default home WiFi gateway's metric (say if 
 sudo systemctl restart dhcpcd.service
 sudo systemctl status dhcpcd.service
 ```
-It should look something like:
+Output should look something like:
 ```
 dhcpcd.service - dhcpcd on all interfaces
    Loaded: loaded (/lib/systemd/system/dhcpcd.service; enabled; vendor preset: e
@@ -86,6 +86,20 @@ chmod 755 00-wifi2eth-*
 9. Re-start `dnsmasq`
 ```
 sudo systemctl restart dnsmasq.service
+sudo systemctl status dnsmasq.service
+```
+Output should look something like:
+```
+dnsmasq.service - dnsmasq - A lightweight DHCP and caching DNS server
+   Loaded: loaded (/lib/systemd/system/dnsmasq.service; enabled; vendor preset: 
+   Active: active (running) since Tue 2023-03-14 13:23:32 AEDT; 1 day 5h ago
+  Process: 548 ExecStartPre=/usr/sbin/dnsmasq --test (code=exited, status=0/SUCC
+  Process: 559 ExecStart=/etc/init.d/dnsmasq systemd-exec (code=exited, status=0
+  Process: 588 ExecStartPost=/etc/init.d/dnsmasq systemd-start-resolvconf (code=
+ Main PID: 587 (dnsmasq)
+    Tasks: 1 (limit: 2059)
+   CGroup: /system.slice/dnsmasq.service
+           └─587 /usr/sbin/dnsmasq -x /run/dnsmasq/dnsmasq.pid -u dnsmasq -r /ru
 ```
 
 10. The cameras specified in `00-wifi2eth-bridged-rules` should now be viewable from anywhere in home WiFi with their RTSP URLs e.g. `rtsp://rpi.local:2222/cam1_rtsp_string` and `rtsp://rpi.local:3333/cam2_rtsp_string` respectively.
