@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# REMEMBER TO UPDATE IP ADDRESSES!
+
+# use this script to set the iptable rule, test, if ok then
+# use wifi2eth-save-my-iptables in /etc/iptables.ipv4.nat
+# to be loaded at boot from /etc/rc.local 
+
+# standard rules to setup traffic between wlan0 and eth0
+sudo iptables -F
+sudo iptables -t nat -F
+sudo iptables -t nat -A POSTROUTING -o wlan0 -j MASQUERADE
+sudo iptables -A FORWARD -i wlan0 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT  
+sudo iptables -A FORWARD -i eth0 -o wlan0 -j ACCEPT
+
+# specific rules for port forwading RTSP port 554 for sec cams
+HCU="192.168.10.10" # hiseeu
+SRI="192.168.10.61" # sri3
+
+#HISEEU
+sudo iptables -t nat -A PREROUTING -p tcp --dport 2222 -i wlan0 \
+         -j DNAT --to $HCU:554
+#SRI requires udp to work from opencv 
+sudo iptables -t nat -A PREROUTING -p tcp --dport 3333 -i wlan0 \
+         -j DNAT --to $SRI:554 
+sudo iptables -t nat -A PREROUTING -p udp --dport 3333 -i wlan0 \
+         -j DNAT --to $SRI:554
